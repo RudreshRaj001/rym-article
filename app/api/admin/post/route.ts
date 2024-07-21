@@ -70,6 +70,34 @@ export async function PUT(req: Request) {
   }
 }
 
+// delete 
+
+export async function DELETE(req: Request) {
+  try {
+    const admin = await isAdmin();
+    if (!admin) {
+      return NextResponse.json(
+        { message: "You are not admin" },
+        { status: 401 }
+      );
+    }
+
+    const { articleId } = await req.json();
+
+    await db.article.delete({ where: { id: articleId } });
+
+    return NextResponse.json({ message: "Article deleted" }, { status: 200 });
+  } catch (error: any) {
+    console.log("Article delete error :", error);
+    return NextResponse.json(
+      { message: "Error deleting article" },
+      { status: 500 }
+    );
+  }
+}
+
+
+
 // model Article {
 //   id         String   @id @default(auto()) @map("_id") @db.ObjectId
 //   title      String

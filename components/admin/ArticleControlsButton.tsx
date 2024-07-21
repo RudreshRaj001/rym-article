@@ -27,13 +27,6 @@ const handleFeature = async (articleId: string) => {
 
 }
 
-const handleEdit = (articleId: string) => {
-  console.log('edit article id: ', articleId)
-}
-
-const handleDelete = (articleId: string) => {
-  console.log('delete article id: ', articleId)
-}
 
 
 export const FeatureButton = (
@@ -65,7 +58,29 @@ export const EditButton = (
 export const DeleteButton = (
   { articleId }: { articleId: string }
 ) => {
+  const handleDelete = async (articleId: string) => {
+    try {
+      toast.loading('Processing...')
+      const res = await fetch(`/api/admin/post`, {
+        method: 'DELETE',
+        body: JSON.stringify({ articleId }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const data = await res.json()
+      toast.dismiss()
+      toast.success(data.message)
+      window.location.reload()
+    } catch (error) {
+      toast.dismiss()
+      toast.error('Error processing request')
+    }
+  }
   return (
-    <Trash2 size={20} color='white' />
+    <Trash2 size={20} color='white'
+      className='cursor-pointer'
+      onClick={() => handleDelete(articleId)}
+    />
   )
 }
